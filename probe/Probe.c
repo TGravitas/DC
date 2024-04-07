@@ -1,59 +1,61 @@
 #include <stdio.h>
-#include <stdbool.h>  // Added for bool type
+#include <stdbool.h>
 #include <stdlib.h>
+
+#define NUM_PROCESSES 5
+
+// Define wait-for graph with assigned values
+int wfg[NUM_PROCESSES][NUM_PROCESSES] = {
+    {0, 1, 0, 0, 0},
+    {0, 0, 1, 0, 0},
+    {0, 0, 0, 1, 0},
+    {0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0}
+};
+
+int *visited;
 
 // Function declaration
 bool probe_dd(int sender, int target, int visited_elements[]);
 
-int visited[5];
-int wfg[5][5] = {{0, 0, 1, 0, 0}, {1, 0, 0, 1, 0}, {0, 1, 0, 0, 1}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
-int sender = 0;
-int j = 0, k = 0;
-
 int main() {
-    printf("Process initiated deadlock detection: ");
+    int sender;
+    printf("Process initiated deadlock detection.\n");
+
+    // Allocate memory for visited array
+    visited = (int *)calloc(NUM_PROCESSES, sizeof(int));
+
+    printf("Enter the starting node for deadlock detection: ");
     scanf("%d", &sender);
     getchar();  // Consume the newline character from the input buffer
 
-    for (int i = 0; i < 5; i++) {
-        if (wfg[sender][i] == 1) {
-            visited[j] = i;
-            j++;
-        }
-    }
-
-    // Introduce an array to keep track of visited elements in the probe_dd function
-    int visited_elements[5] = {0};
-
-    bool deadlock = probe_dd(sender, visited[k], visited_elements);
-    k++;
-    if (deadlock == true) {
+    bool deadlock = probe_dd(sender, sender, visited);
+    if (deadlock) {
         printf("\nDeadlock has been detected!");
     } else {
         printf("\nNo deadlock has been detected!");
     }
 
+    // Free dynamically allocated memory
+    free(visited);
+
     return 0;
 }
 
 bool probe_dd(int sender, int target, int visited_elements[]) {
-    if (sender == target || visited_elements[target]) {
-        return true;
+    if (visited_elements[target]) {
+        return true; // Deadlock detected
     }
 
     visited_elements[target] = 1; // Mark the element as visited
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < NUM_PROCESSES; i++) {
         if (wfg[target][i] == 1) {
-            visited[j] = i;
-            j++;
+            if (probe_dd(sender, i, visited_elements)) {
+                return true; // Deadlock detected
+            }
         }
     }
 
-    if (visited[k] != '\0') {
-            printf("\n%d",visited[k]);
-        return probe_dd(sender, visited[k++], visited_elements);
-    }
-
-    return false;
+    return false; // No deadlock detected
 }
