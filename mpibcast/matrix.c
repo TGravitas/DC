@@ -87,3 +87,6 @@ int main(int argc, char *argv[]) {
     MPI_Finalize();
     return 0;
 }
+
+//mpicc -o matrix matrix.c
+// mpiexec -n 3 ./matrix
