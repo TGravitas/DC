@@ -49,3 +49,6 @@ int main(int argc, char **argv)
 
 	ierr = MPI_Finalize();
 }     
+
+//mpicc -o pi pi.c
+// mpiexec -n 6 ./pi
