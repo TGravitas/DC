@@ -16,12 +16,12 @@ void display()
 }
 void bully()
 {
-	int ch,crash,activate,i,gid,flag,subcdr;
+	int choice,crash,activate,i,gid,flag,subcdr;
 	do
 	{
 			printf("\n1.Crash\n2.Activate\n3.Display\n4.Exit\nEnter You choice::");
-			scanf("%d",&ch);
-			switch(ch)
+			scanf("%d",&choice);
+			switch(choice)
 			{
 				case 1:
 					printf("\nEnter Process no. to Crash::");
@@ -108,7 +108,7 @@ void bully()
 			case 4:
 				break;
 			}
-	}while(ch!=4);
+	}while(choice!=4);
 }
 int main()
 {
